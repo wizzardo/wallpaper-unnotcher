@@ -3,3 +3,6 @@ build/
 
 .idea
 .DS_Store
+
+src/main/resources/public
+src/main/resources/public-list.txt

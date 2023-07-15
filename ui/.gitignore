@@ -1,0 +1,6 @@
+node_modules
+/build
+/buildts
+/*.log
+*.css
+src/BuildInfo.ts
