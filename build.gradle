@@ -1,0 +1,77 @@
+import java.nio.file.Files
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+
+    dependencies {
+        classpath("com.wizzardo.tools:tools-gradle-build:0.24-SNAPSHOT")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'tools-gradle-build'
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+mainClassName = 'com.example.App'
+
+dependencies {
+    implementation 'com.wizzardo.tools:tools:0.24-SNAPSHOT'
+//    implementation files('../../tools/build/libs/tools-all-0.24-SNAPSHOT.jar')
+    implementation('com.wizzardo:http:0.5-SNAPSHOT') {
+        exclude group: 'com.wizzardo.tools'
+    }
+
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+
+task([description: 'listing all public files'], 'listPublicFiles', {
+    doLast {
+        def file = new File(projectDir.absolutePath, "src/main/resources/public-list.txt")
+        file.parentFile.mkdirs()
+
+        def sout = new StringBuilder(), serr = new StringBuilder()
+        def publicFolder = new File(projectDir.absolutePath, "src/main/resources/public")
+        if (!publicFolder.isDirectory())
+            return
+
+        def root = publicFolder.toPath()
+        Files.walk(root).forEach({
+            if (it.toFile().isFile())
+                sout.append('/').append(it.subpath(root.getNameCount() - 1, it.getNameCount())).append('\n')
+        })
+
+        file.setText(sout.toString())
+    }
+})
+tasks.processResources.dependsOn listPublicFiles
+
+
+task resolveDependencies {
+    setDescription "Resolves all projects dependencies from the repository."
+    doLast {
+        rootProject.allprojects { project ->
+            Set<Configuration> configurations = project.buildscript.configurations + project.configurations
+            configurations.findAll { c -> c.canBeResolved }
+                    .forEach { c -> c.resolve() }
+        }
+    }
+}
