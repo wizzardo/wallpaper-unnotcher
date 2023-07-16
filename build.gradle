@@ -35,7 +35,6 @@ dependencies {
     implementation('com.wizzardo:http:0.5-SNAPSHOT') {
         exclude group: 'com.wizzardo.tools'
     }
-
 }
 
 tasks.test {

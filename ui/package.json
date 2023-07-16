@@ -75,7 +75,7 @@
     "preact": "^10.16.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-ui-basics": "0.0.203"
+    "react-ui-basics": "0.0.204"
   },
   "jest": {
     "preset": "jest-preset-preact",
