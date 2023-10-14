@@ -3,7 +3,7 @@ FROM node:18-alpine as web-builder
 WORKDIR /tmp/app
 
 COPY ui/package.json .
-RUN npm i
+RUN npm i --legacy-peer-deps
 
 COPY ui/tsconfig.json .
 COPY ui/preact.config.js .
